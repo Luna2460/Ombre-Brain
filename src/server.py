@@ -2046,9 +2046,9 @@ async def api_settings_sampling(request: Request) -> Response:
     if request.method == "GET":
         return JSONResponse({
             "enabled": bool(sampling.get("enabled", False)),
-            "top_k": int(sampling.get("top_k", 5)),
-            "sample_k": int(sampling.get("sample_k", 2)),
-            "temperature": float(sampling.get("temperature", 0.7)),
+            "top_k": int(sampling.get("top_k") or 5),
+            "sample_k": int(sampling.get("sample_k") or 2),
+            "temperature": float(sampling.get("temperature") or 0.7),
         })
     try:
         body = await request.json()
@@ -3067,9 +3067,9 @@ async def api_config_get(request: Request) -> Response:
             ],
         },
         "surfacing": {
-            "breath_max_results": int(config.get("surfacing", {}).get("breath_max_results", 20)),
-            "breath_max_tokens": int(config.get("surfacing", {}).get("breath_max_tokens", 10000)),
-            "feel_max_tokens": int(config.get("surfacing", {}).get("feel_max_tokens", 6000)),
+            "breath_max_results": int(config.get("surfacing", {}).get("breath_max_results") or 20),
+            "breath_max_tokens": int(config.get("surfacing", {}).get("breath_max_tokens") or 10000),
+            "feel_max_tokens": int(config.get("surfacing", {}).get("feel_max_tokens") or 6000),
         },
         "merge_threshold": config.get("merge_threshold", 75),
         "transport": config.get("transport", "stdio"),
@@ -3959,9 +3959,7 @@ async def api_import_review(request: Request) -> Response:
             elif action == "noise":
                 await bucket_mgr.update(bid, resolved=True, importance=1)
             elif action == "delete":
-                file_path = bucket_mgr._find_bucket_file(bid)
-                if file_path:
-                    os.remove(file_path)
+                await bucket_mgr.delete(bid)
             applied += 1
         except Exception as e:
             logger.warning(f"Review action failed for {bid}: {e}")
@@ -4032,7 +4030,7 @@ async def api_bucket_edit(request: Request) -> Response:
         new_pinned = bool(body["pinned"])
         cur_pinned = bool(bucket["metadata"].get("pinned", False))
         if new_pinned and not cur_pinned:
-            quota_err = _check_pinned_quota()
+            quota_err = await _check_pinned_quota()
             if quota_err:
                 return JSONResponse({"error": quota_err}, status_code=400)
             updates["pinned"] = True

@@ -95,7 +95,7 @@ def format_dream_output(
         feels_all.sort(key=lambda b: b["metadata"].get("created", ""), reverse=True)
         if feels_all:
             surfacing_cfg = rt.config.get("surfacing", {}) or {}
-            feel_budget = int(surfacing_cfg.get("feel_max_tokens", 6000))
+            feel_budget = int(surfacing_cfg.get("feel_max_tokens") or 6000)
             full_lines: list[str] = []
             collapsed_lines: list[str] = []
             used = 0

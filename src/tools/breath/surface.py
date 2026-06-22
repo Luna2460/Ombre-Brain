@@ -141,9 +141,9 @@ async def surface_default(max_results: int, max_tokens: int, tag_filter: list) -
     if sampling_cfg.get("enabled", False) and len(candidates) > len(cold_start) + 1:
         n_cold = len(cold_start)
         non_cold = candidates[n_cold:]
-        top_k = int(sampling_cfg.get("top_k", 5))
-        sample_k = int(sampling_cfg.get("sample_k", 2))
-        temperature = max(0.1, float(sampling_cfg.get("temperature", 0.7)))
+        top_k = int(sampling_cfg.get("top_k") or 5)
+        sample_k = int(sampling_cfg.get("sample_k") or 2)
+        temperature = max(0.1, float(sampling_cfg.get("temperature") or 0.7))
         pool = non_cold[:max(top_k, sample_k)]
         try:
             weights = [
