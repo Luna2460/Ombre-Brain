@@ -408,7 +408,10 @@ docker compose -f deploy/docker-compose.yml up -d
 
 > 💾 **本地模型内存提醒**：bge-m3 加载后常驻约 2–3GB 内存。低配机器（<2GB 空闲内存）建议继续用云端；纯 CPU 即可推理，首条查询冷启动约 1–9s，之后 <0.5s。
 
-> 🧩 **用硅基流动（SiliconFlow）等 OpenAI 兼容云端向量化**：在 Dashboard ③ 引擎 → 向量化 区按下面填，**两个最常踩的坑都在这**：
+> 🧩 **用硅基流动（SiliconFlow）等 OpenAI 兼容云端向量化**：
+> **最省事：在 Dashboard ③ 引擎 → 向量化 顶部的「服务商预设」里选『硅基流动』**，会自动把 Base URL 和正确的模型名填好，你只要填 key → 保存 → 测试。脱水(LLM) 面板同理有预设。
+>
+> 想手动填也行（**两个最常踩的坑都在这**）：
 > - 格式：`OpenAI 兼容`
 > - Base URL：`https://api.siliconflow.cn/v1` —— **末尾必须带 `/v1`**，漏了会 404（page not found）
 > - Model：`BAAI/bge-m3` —— **必须带 `BAAI/` 前缀**，只写 `bge-m3` 会报 `Model does not exist`（免费，1024 维）
